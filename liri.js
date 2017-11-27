@@ -9,9 +9,9 @@ switch(command) {
     case "spotify-this-song":
         spotifySong();
         break;
-    /*case n:
-        code block
-        break;*/
+    case "movie-this":
+        movieThis();
+        break;
     default:
         break;
 }
@@ -76,4 +76,33 @@ function spotifySong(){
         console.error('Error occurred: ' + err); 
         });
     }
+}
+
+function movieThis(){
+    var movieName = process.argv[3];
+    //console.log(movieName);
+
+    var request = require("request");
+    var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=40e9cece";
+ 
+    request(queryUrl, function(error, response, body) {
+        
+          // If the request is successful (i.e. if the response status code is 200)
+          if (!error && response.statusCode === 200) {
+        
+            // Parse the body of the site and recover just the imdbRating
+            // (Note: The syntax below for parsing isn't obvious. Just spend a few moments dissecting it).
+            console.log("Title: " + JSON.parse(body).Title);
+            console.log("Year: " + JSON.parse(body).Year);
+            console.log("IMDB: " + JSON.parse(body).imdbRating);
+            console.log("Rotten Tomatoes: " + JSON.parse(body).Ratings[1].Value);
+            console.log("Country: " + JSON.parse(body).Country);
+            console.log("Langauge: " + JSON.parse(body).Language);
+            console.log("Plot: " + JSON.parse(body).Plot);
+            console.log("Actors: " + JSON.parse(body).Actors);
+
+                
+            //console.log( JSON.parse(body) );
+          }
+        });
 }
