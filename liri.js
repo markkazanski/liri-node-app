@@ -1,5 +1,7 @@
 chooseCommand(process.argv[2], process.argv[3]); //gets command and movie/song name, passes to swithc
 
+logData(process.argv[2] + " " + process.argv[3]);
+
 function chooseCommand(commandString, argumentString){
     switch(commandString) {
         case "my-tweets":
@@ -40,6 +42,10 @@ function myTweets(){
             console.log("Date: " + tweets[i].created_at);
             console.log("Tweet: " + tweets[i].text);
             console.log(" ");
+
+            logData("Date: " + tweets[i].created_at);
+            logData("Tweet: " + tweets[i].text);
+            logData(" ");
         }
         
       }
@@ -68,6 +74,11 @@ function spotifySong(argument){
             console.log("Album: " + data.tracks.items[0].album.name);
             console.log("Link: " + data.tracks.items[0].external_urls.spotify);
 
+            logData("Artist: " + data.tracks.items[0].artists[0].name); 
+            logData("Song: " + data.tracks.items[0].name);
+            logData("Album: " + data.tracks.items[0].album.name);
+            logData("Link: " + data.tracks.items[0].external_urls.spotify);
+
             //console.log( data.tracks.items[0].artists[0].name );
         });
     }else{ //no song name = ace of base
@@ -77,6 +88,11 @@ function spotifySong(argument){
             console.log("Song: " + data.name);
             console.log("Album: " + data.album.name);
             console.log("Link: " + data.external_urls.spotify);
+
+            logData("Artist: " + data.artists[0].name); 
+            logData("Song: " + data.name);
+            logData("Album: " + data.album.name);
+            logData("Link: " + data.external_urls.spotify);
         })
         .catch(function(err) {
             console.error('Error occurred: ' + err); 
@@ -106,15 +122,28 @@ function movieThis(argument){
             console.log("Year: " + JSON.parse(body).Year);
             console.log("IMDB: " + JSON.parse(body).imdbRating);
 
-            if( JSON.parse(body).Ratings[1] !== undefined )
+            logData("Title: " + JSON.parse(body).Title);
+            logData("Year: " + JSON.parse(body).Year);
+            logData("IMDB: " + JSON.parse(body).imdbRating);
+
+            if( JSON.parse(body).Ratings[1] !== undefined ){
                 console.log("Rotten Tomatoes: " + JSON.parse(body).Ratings[1].Value);
-            else
+                logData("Rotten Tomatoes: " + JSON.parse(body).Ratings[1].Value);
+            }
+            else{
                 console.log("Rotten Tomatoes: N/A");
+                logData("Rotten Tomatoes: N/A");
+            }
             
             console.log("Country: " + JSON.parse(body).Country);
             console.log("Langauge: " + JSON.parse(body).Language);
             console.log("Plot: " + JSON.parse(body).Plot);
             console.log("Actors: " + JSON.parse(body).Actors);
+
+            logData("Country: " + JSON.parse(body).Country);
+            logData("Langauge: " + JSON.parse(body).Language);
+            logData("Plot: " + JSON.parse(body).Plot);
+            logData("Actors: " + JSON.parse(body).Actors);
 
                 
             //console.log( JSON.parse(body) );
@@ -130,4 +159,23 @@ function doWhatSays(){
        // console.log(dataArr[0] + " " + dataArr[1]);
         chooseCommand(dataArr[0], dataArr[1]); //weird recursive stuff
     });
+}
+
+function logData(dataToLog){
+    //console.log(dataToLog);
+
+    var fs = require("fs");
+    fs.appendFile("log.txt", dataToLog + "\r\n", function(err) {
+        
+            // If an error was experienced we say it.
+            if (err) {
+              console.log(err);
+            }
+        
+            // If no error is experienced, we'll log the phrase "Content Added" to our node console.
+            else {
+              //console.log("Content Added!");
+            }
+        
+          });
 }
