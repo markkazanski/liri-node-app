@@ -43,6 +43,37 @@ function myTweets(){
 }
 
 function spotifySong(){
-    var songName = process.argv[3];
-    console.log(songName);
+
+    var Spotify = require('node-spotify-api');
+    var spotify = new Spotify({
+        id: "fd6069095e4642c2aefdb5f319554b7d",
+        secret: "b6ee6f87f65c4e0694f5c570d7eca82c"
+      });
+
+    if(process.argv[3] !== undefined){ //if song name provided
+        var songName = process.argv[3];
+        console.log(songName);
+
+        spotify.search({ type: 'track', query: songName }, function(err, data) {
+            if (err) {
+                return console.log('Error occurred: ' + err);
+            }
+
+            console.log("Artist: " + data.tracks.items[0].artists.name); 
+            console.log("Song: " + data.tracks.items[0].name);
+            console.log("Album: " + data.tracks.items[0].album.name);
+            console.log("Link: " + data.tracks.items[0].external_urls.spotify);
+        });
+    }else{ //no song name = ace of base
+        spotify.request('https://api.spotify.com/v1/tracks/0hrBpAOgrt8RXigk83LLNE')
+            .then(function(data) {
+            console.log("Artist: " + data.artists[0].name); 
+            console.log("Song: " + data.name);
+            console.log("Album: " + data.album.name);
+            console.log("Link: " + data.external_urls.spotify);
+        })
+        .catch(function(err) {
+        console.error('Error occurred: ' + err); 
+        });
+    }
 }
