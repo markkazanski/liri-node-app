@@ -6,6 +6,9 @@ switch(command) {
     case "my-tweets":
         myTweets();
         break;
+    case "spotify-this-song":
+        spotifySong();
+        break;
     /*case n:
         code block
         break;*/
@@ -37,4 +40,9 @@ function myTweets(){
         
       }
     });
+}
+
+function spotifySong(){
+    var songName = process.argv[3];
+    console.log(songName);
 }
