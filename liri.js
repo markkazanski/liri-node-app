@@ -1,19 +1,22 @@
+chooseCommand(process.argv[2], process.argv[3]); //gets command and movie/song name, passes to swithc
 
-
-var command = process.argv[2];
-
-switch(command) {
-    case "my-tweets":
-        myTweets();
-        break;
-    case "spotify-this-song":
-        spotifySong();
-        break;
-    case "movie-this":
-        movieThis();
-        break;
-    default:
-        break;
+function chooseCommand(commandString, argumentString){
+    switch(commandString) {
+        case "my-tweets":
+            myTweets();
+            break;
+        case "spotify-this-song":
+            spotifySong(argumentString);
+            break;
+        case "movie-this":
+            movieThis(argumentString);
+            break;
+        case "do-what-it-says":
+            doWhatSays();
+            break;
+        default:
+            break;
+    }
 }
 
 function myTweets(){
@@ -42,7 +45,7 @@ function myTweets(){
     });
 }
 
-function spotifySong(){
+function spotifySong(argument){
 
     var Spotify = require('node-spotify-api');
     var spotify = new Spotify({
@@ -50,19 +53,21 @@ function spotifySong(){
         secret: "b6ee6f87f65c4e0694f5c570d7eca82c"
       });
 
-    if(process.argv[3] !== undefined){ //if song name provided
+    if(argument !== undefined){ //if song name provided
         var songName = process.argv[3];
-        console.log(songName);
+        //console.log(songName);
 
         spotify.search({ type: 'track', query: songName }, function(err, data) {
             if (err) {
                 return console.log('Error occurred: ' + err);
             }
 
-            console.log("Artist: " + data.tracks.items[0].artists.name); 
+            console.log("Artist: " + data.tracks.items[0].artists[0].name); 
             console.log("Song: " + data.tracks.items[0].name);
             console.log("Album: " + data.tracks.items[0].album.name);
             console.log("Link: " + data.tracks.items[0].external_urls.spotify);
+
+            //console.log( data.tracks.items[0].artists[0].name );
         });
     }else{ //no song name = ace of base
         spotify.request('https://api.spotify.com/v1/tracks/0hrBpAOgrt8RXigk83LLNE')
@@ -78,9 +83,13 @@ function spotifySong(){
     }
 }
 
-function movieThis(){
-    var movieName = process.argv[3];
+function movieThis(argument){
+    var movieName;
     //console.log(movieName);
+    if(argument !== undefined)
+        movieName = argument;
+    else   
+        movieName = "Mr. Nobody";
 
     var request = require("request");
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=40e9cece";
@@ -95,7 +104,12 @@ function movieThis(){
             console.log("Title: " + JSON.parse(body).Title);
             console.log("Year: " + JSON.parse(body).Year);
             console.log("IMDB: " + JSON.parse(body).imdbRating);
-            console.log("Rotten Tomatoes: " + JSON.parse(body).Ratings[1].Value);
+
+            if( JSON.parse(body).Ratings[1] !== undefined )
+                console.log("Rotten Tomatoes: " + JSON.parse(body).Ratings[1].Value);
+            else
+                console.log("Rotten Tomatoes: N/A");
+            
             console.log("Country: " + JSON.parse(body).Country);
             console.log("Langauge: " + JSON.parse(body).Language);
             console.log("Plot: " + JSON.parse(body).Plot);
@@ -105,4 +119,14 @@ function movieThis(){
             //console.log( JSON.parse(body) );
           }
         });
+}
+
+function doWhatSays(){
+    var fs = require("fs");
+    fs.readFile("./random.txt", "utf8", function(error, data) {
+        console.log(data);
+        var dataArr = data.split(",");
+        console.log(dataArr);
+        chooseCommand(dataArr[0]);
+    });
 }
