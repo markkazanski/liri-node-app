@@ -6,6 +6,7 @@ function chooseCommand(commandString, argumentString){
             myTweets();
             break;
         case "spotify-this-song":
+            //argumentString
             spotifySong(argumentString);
             break;
         case "movie-this":
@@ -54,7 +55,7 @@ function spotifySong(argument){
       });
 
     if(argument !== undefined){ //if song name provided
-        var songName = process.argv[3];
+        var songName = argument;
         //console.log(songName);
 
         spotify.search({ type: 'track', query: songName }, function(err, data) {
@@ -78,7 +79,7 @@ function spotifySong(argument){
             console.log("Link: " + data.external_urls.spotify);
         })
         .catch(function(err) {
-        console.error('Error occurred: ' + err); 
+            console.error('Error occurred: ' + err); 
         });
     }
 }
@@ -124,9 +125,9 @@ function movieThis(argument){
 function doWhatSays(){
     var fs = require("fs");
     fs.readFile("./random.txt", "utf8", function(error, data) {
-        console.log(data);
+       // console.log(data);
         var dataArr = data.split(",");
-        console.log(dataArr);
-        chooseCommand(dataArr[0]);
+       // console.log(dataArr[0] + " " + dataArr[1]);
+        chooseCommand(dataArr[0], dataArr[1]); //weird recursive stuff
     });
 }
